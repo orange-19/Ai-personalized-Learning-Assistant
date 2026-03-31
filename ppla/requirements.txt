@@ -1,0 +1,16 @@
+# PPLA — Python dependencies
+
+# Web server
+flask>=3.0.0
+
+# LangChain core (always needed)
+langchain>=0.3.0
+langchain-core>=0.3.0
+
+# ── AI providers (install the one you use) ──────────────────
+# Grok (xAI) and OpenAI — uses the same package
+langchain-openai>=0.3.0
+langchain-groq>=0.3.0
+
+# Anthropic (Claude) — only needed if AI_PROVIDER=anthropic
+# langchain-anthropic>=0.3.0
