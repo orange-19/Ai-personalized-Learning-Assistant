@@ -15,7 +15,19 @@ public class ProfileServices {
     private ProfileRepository profileRepository;
 
     public void createProfile(Profiledto profile){
+        if (profile == null) {
+            throw new IllegalArgumentException("Profile payload is required");
+        }
+
         String username = profile.getUsername();
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("username is required");
+        }
+
+        if (profileRepository.existsByUsername(username)) {
+            throw new IllegalArgumentException("Profile already exists for username: " + username);
+        }
+
         String name = profile.getName();
         String rollno = profile.getRollno();
         String email = profile.getEmail();

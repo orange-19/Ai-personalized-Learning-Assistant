@@ -8,28 +8,28 @@
 /* ─── CSS Variables ──────────────────────────────────────────── */
 :root {
   /* Colors from User Palette */
-  --primary:        #DC7171; /* Coral/Red from palette */
-  --primary-light:  #EA9999;
-  --primary-dark:   #BA5D5D;
-  --accent:         #FBF1C7; /* Pale Yellow from palette */
-  --accent-pink:    #FBCCCC; /* Soft Pink from palette */
-  --success:        #A8D5BA;
-  --error:          #E57373;
-  --warning:        #FFD54F;
+  --primary:        #2563EB;
+  --primary-light:  #60A5FA;
+  --primary-dark:   #1D4ED8;
+  --accent:         #DBEAFE;
+  --accent-pink:    #EFF6FF;
+  --success:        #10B981;
+  --error:          #EF4444;
+  --warning:        #F59E0B;
 
   /* Neutrals for Light Theme */
-  --bg-base:        #FAF9F6; /* Creamy Off-white background */
-  --bg-surface:     #FFFFFF; /* Pure white for cards */
-  --bg-sidebar:     #F8F7F2; /* Subtle tinted sidebar */
-  --bg-hover:       #F5F4EF;
+  --bg-base:        #F8FAFC;
+  --bg-surface:     #FFFFFF;
+  --bg-sidebar:     #FFFFFF;
+  --bg-hover:       #F1F5F9;
   
-  --border:         #EAE8E1;
-  --border-subtle:  #F2F0EB;
-  --border-active:  #DC7171;
+  --border:         #E2E8F0;
+  --border-subtle:  #F1F5F9;
+  --border-active:  #2563EB;
 
-  --text-primary:   #2D2A26; /* Deep charcoal for high contrast */
-  --text-secondary: #5C5852;
-  --text-muted:     #8E8981;
+  --text-primary:   #0F172A;
+  --text-secondary: #475569;
+  --text-muted:     #94A3B8;
 
   /* Layout Constants */
   --sidebar-width:  240px;
@@ -192,7 +192,7 @@ body {
 .input-label {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #DC7171;
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -211,13 +211,13 @@ body {
 }
 
 .input-field:focus {
-  border-color: #DC7171;
-  box-shadow: 0 0 0 3px rgba(220, 113, 113, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 select.input-field {
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23DC7171' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 12px center;
   background-size: 14px;
@@ -307,7 +307,7 @@ p { color: var(--text-secondary); margin-bottom: 12px; }
   font-size: 0.75rem;
   font-weight: 600;
   background: var(--accent);
-  color: #7B6B38;
+  color: var(--primary-dark);
 }
 .badge-success { background: #E4F2E7; color: #2D6A4F; }
 .badge-error { background: #FDEDEC; color: #922B21; }

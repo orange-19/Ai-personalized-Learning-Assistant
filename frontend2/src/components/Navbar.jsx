@@ -1,49 +1,58 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { Menu, Search, Plus, MessageSquare, Bell, HelpCircle, Settings, LogOut, Shield } from 'lucide-react';
 
 const Navbar = ({ toggleSidebar, toggleProfile }) => {
-  const { currentUser } = useApp();
+  const { currentUser, logout } = useApp();
 
   return (
-    <header className="navbar">
+    <header className="navbar flex justify-between items-center w-full px-6 h-[var(--navbar-height)] bg-white border-b border-gray-200">
       <div className="flex items-center gap-4">
         <button
-          className="btn btn-icon btn-secondary"
+          className="lg:hidden text-gray-500 hover:text-gray-900"
           onClick={toggleSidebar}
-          style={{ display: window.innerWidth < 768 ? 'block' : 'none' }}
         >
-          ☰
+          <Menu size={20} />
         </button>
-        <span style={{ fontSize: '1.2rem', pointerEvents: 'none', marginRight: '4px' }}>🛡️</span>
-        <span style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '-0.01em' }}>Dashboards</span>
+        
+        {currentUser?.role === 'admin' ? (
+           <div className="flex items-center gap-2 text-[#2563EB]">
+             <Shield size={18} />
+             <span className="font-semibold text-sm">Admin Control</span>
+           </div>
+        ) : (
+          <span className="font-semibold text-sm text-gray-600 hidden md:block">Workspace</span>
+        )}
       </div>
 
-      <div className="navbar-search">
-         <span>🔍</span> Search courses, topics...
+      <div className="hidden md:flex items-center bg-gray-100 rounded-md px-3 py-1.5 w-full max-w-md">
+        <Search size={16} className="text-gray-400 mr-2" />
+        <input 
+          type="text" 
+          placeholder="Search modules..." 
+          className="bg-transparent border-none outline-none text-sm w-full text-gray-700"
+        />
       </div>
 
-      <div className="flex items-center gap-3">
-        <button className="btn btn-primary btn-sm" style={{ padding: '6px 14px' }}>
-          + Create
-        </button>
+      <div className="flex items-center gap-4">
+        {currentUser?.role === 'admin' && (
+          <button className="hidden sm:flex items-center gap-1 bg-[#2563EB] hover:bg-blue-700 text-white rounded px-3 py-1.5 text-xs font-semibold transition-colors">
+            <Plus size={14} /> New Module
+          </button>
+        )}
 
-        <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
-           <button className="btn btn-icon btn-secondary" title="Chat" style={{ border: 'none', background: 'none', fontSize: '1.1rem' }}>💬</button>
-           <button className="btn btn-icon btn-secondary" title="Notifications" style={{ border: 'none', background: 'none', fontSize: '1.1rem' }}>🔔</button>
-           <button className="btn btn-icon btn-secondary" title="Help" style={{ border: 'none', background: 'none', fontSize: '1.1rem' }}>❓</button>
-           <button className="btn btn-icon btn-secondary" title="Settings" style={{ border: 'none', background: 'none', fontSize: '1.1rem' }}>⚙️</button>
+        <div className="flex items-center text-gray-500 gap-3">
+          <button className="hover:text-gray-900 transition-colors hidden sm:block"><MessageSquare size={18} /></button>
+          <button className="hover:text-gray-900 transition-colors"><Bell size={18} /></button>
+          <button className="hover:text-gray-900 transition-colors hidden sm:block"><HelpCircle size={18} /></button>
+          <button className="hover:text-gray-900 transition-colors" onClick={logout} title="Logout"><LogOut size={18} /></button>
         </div>
 
         <button 
-          className="avatar" 
-          style={{ 
-            width: 32, height: 32, cursor: 'pointer', marginLeft: '8px', 
-            borderRadius: '50%', background: 'var(--primary)', color: '#fff', 
-            display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', fontSize: '0.75rem', fontWeight: 700 
-          }} 
+          className="w-8 h-8 rounded-full bg-[#2563EB] text-white flex items-center justify-center text-xs font-bold shadow-sm"
           onClick={toggleProfile}
         >
-          {currentUser.name.charAt(0)}
+          {currentUser?.name?.charAt(0) || 'U'}
         </button>
       </div>
     </header>

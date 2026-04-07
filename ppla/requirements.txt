@@ -3,6 +3,9 @@
 # Web server
 flask>=3.0.0
 
+# Environment variables
+python-dotenv>=1.0.0
+
 # LangChain core (always needed)
 langchain>=0.3.0
 langchain-core>=0.3.0

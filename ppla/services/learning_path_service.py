@@ -20,6 +20,7 @@ load_dotenv()
 
 from models.evaluation_models    import EvaluationResult
 from models.learning_path_models import DayPlan, LearningPathResult
+from config.settings import DEFAULT_TOPICS, WEAK_TOPIC_WEIGHT, STRONG_TOPIC_WEIGHT
 
 GROQ_API_KEY       = os.getenv("GROQ_API_KEY")
 GROQ_MODEL         = "llama-3.3-70b-versatile"

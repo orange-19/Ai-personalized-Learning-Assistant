@@ -1,0 +1,52 @@
+# Backend Environment Configuration
+# Copy this file to backend-2/.env (or just update application.properties directly)
+
+# ═══════════════════════════════════════════════════════════════
+# DATABASE CONFIGURATION
+# ═══════════════════════════════════════════════════════════════
+
+# PostgreSQL Connection
+# Remember to create the database first!
+# CREATE DATABASE backenddb;
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/backenddb
+spring.datasource.username=postgres
+spring.datasource.password=postgresql
+
+# ═══════════════════════════════════════════════════════════════
+# PYTHON MICROSERVICE URLs
+# ═══════════════════════════════════════════════════════════════
+
+python.api.generate-diagnostic.url=http://localhost:5000/api/generate-diagnostic
+python.api.evaluate.url=http://localhost:5000/api/evaluate
+python.api.generate-path.url=http://localhost:5000/api/generate-path
+python.api.languages.url=http://localhost:5000/api/languages
+
+# ═══════════════════════════════════════════════════════════════
+# JPA / HIBERNATE SETTINGS
+# ═══════════════════════════════════════════════════════════════
+
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+
+# First run: create (creates tables automatically)
+# After first run: update (modifies tables only)
+# For production: validate (checks schema matches entities)
+spring.jpa.hibernate.ddl-auto=create
+
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# ═══════════════════════════════════════════════════════════════
+# SERVER SETTINGS
+# ═══════════════════════════════════════════════════════════════
+
+server.port=8080
+spring.application.name=backend-2
+
+# ═══════════════════════════════════════════════════════════════
+# LOGGING
+# ═══════════════════════════════════════════════════════════════
+
+logging.level.root=INFO
+logging.level.com.personalizedlearningassistant=DEBUG
+logging.level.org.springframework.web=DEBUG

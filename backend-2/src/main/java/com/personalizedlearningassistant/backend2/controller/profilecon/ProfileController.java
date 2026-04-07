@@ -3,6 +3,8 @@ package com.personalizedlearningassistant.backend2.controller.profilecon;
 import com.personalizedlearningassistant.backend2.dto.profiledtos.Profiledto;
 import com.personalizedlearningassistant.backend2.services.profile.ProfileServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -18,8 +20,22 @@ public class ProfileController {
 
     @PostMapping("/create-profile")
     public ResponseEntity<?> createProfile(@RequestBody Profiledto profiledto) {
-        profileService.createProfile(profiledto);
-        return ResponseEntity.ok().body("Profile created successfully");
+        try {
+            profileService.createProfile(profiledto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Profile created successfully");
+        } catch (IllegalArgumentException e) {
+            String message = e.getMessage() != null ? e.getMessage() : "Invalid profile payload";
+            if (message.startsWith("Profile already exists")) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body(message);
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+        } catch (DataIntegrityViolationException e) {
+            logger.warn("Duplicate/constraint issue while creating profile", e);
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Profile already exists or violates a database constraint");
+        } catch (Exception e) {
+            logger.error("Error while creating profile", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while creating profile: " + e.getMessage());
+        }
     }
 
     @GetMapping("/get-profile/{username}")

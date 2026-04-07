@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { MOCK_QUESTION_RESPONSE, MOCK_EVALUATE_RESPONSE } from '../services/mockData';
+import { generateQuestions, evaluateAnswers } from '../services/api';
 
 const AssessmentPage = () => {
     const { currentUser, addNotification } = useApp();
@@ -15,32 +15,54 @@ const AssessmentPage = () => {
     const [evaluationResult, setEvaluationResult] = useState(null);
     const [answers, setAnswers] = useState({});
 
-    const handleCreateAssessment = (e) => {
+    const handleCreateAssessment = async (e) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate API call with GenerateQuestionRequest
-        setTimeout(() => {
-            setAssessmentData(MOCK_QUESTION_RESPONSE);
+        try {
+            const response = await generateQuestions({
+                username: currentUser?.username || 'testuser',
+                language: formData.programminglanguage,
+                difficulty: formData.difficultylevel,
+                count: formData.questionneededforassessment,
+            });
+
+            setAssessmentData(response);
             setLoading(false);
             setStep(2);
             setAnswers({});
-        }, 1200);
+        } catch (error) {
+            addNotification(`Failed to generate assessment: ${error.message}`, "error");
+            setLoading(false);
+        }
     };
 
     const handleOptionSelect = (qId, option) => {
         setAnswers({ ...answers, [qId]: option });
     };
 
-    const handleEvaluate = (e) => {
+    const handleEvaluate = async (e) => {
         e.preventDefault();
         setLoading(true);
-        // Simulate API call with EvaluateRequest
-        setTimeout(() => {
-            setEvaluationResult(MOCK_EVALUATE_RESPONSE);
+        try {
+            const answerList = assessmentData.questions.map((q) => ({
+                questionid: q.questionid,
+                chosenoption: answers[q.questionid] || '',
+            }));
+
+            const response = await evaluateAnswers({
+                username: currentUser?.username || 'testuser',
+                language: formData.programminglanguage,
+                answers: answerList,
+            });
+
+            setEvaluationResult(response);
             setLoading(false);
             setStep(3);
             addNotification("Evaluation complete! View your score now.", "success");
-        }, 1800);
+        } catch (error) {
+            addNotification(`Failed to evaluate assessment: ${error.message}`, "error");
+            setLoading(false);
+        }
     };
 
     if (step === 1) {

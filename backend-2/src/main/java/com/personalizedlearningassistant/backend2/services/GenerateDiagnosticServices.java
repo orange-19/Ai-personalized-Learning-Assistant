@@ -5,6 +5,7 @@ import com.personalizedlearningassistant.backend2.dto.pythonapis.diagnosticmodul
 import com.personalizedlearningassistant.backend2.dto.pythonapis.diagnosticmodule.GenerateDiagnosticResponse;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -16,6 +17,7 @@ public class GenerateDiagnosticServices {
     public GenerateDiagnosticResponse generateDiagnostic(GenerateDiagnosticRequest generateDiagnosticRequest) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<GenerateDiagnosticRequest> entity = new HttpEntity<>(generateDiagnosticRequest, headers);
         return restTemplate.postForObject(apiUrl, entity, GenerateDiagnosticResponse.class);
     }
