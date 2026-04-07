@@ -95,15 +95,25 @@ public class SecurityConfig {
 
                 // Configure authorization rules
                 .authorizeHttpRequests(authz -> authz
-                        // Public endpoints
+                        // Public endpoints - login and registration without security filters
                         .requestMatchers(HttpMethod.GET, "/home").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/users/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/jwt-info/**").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/api/login").permitAll()
+                        .requestMatchers("/api/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/create-profile").permitAll()
 
                         // Protected endpoints - require authentication
                         .requestMatchers("/api/profile/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/get-profile/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/update-profile/**").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/update-profile/**").authenticated()
                         .requestMatchers("/api/learning-path/**").authenticated()
                         .requestMatchers("/api/diagnostic/**").authenticated()
                         .requestMatchers("/api/questions/**").authenticated()

@@ -4,6 +4,7 @@ import com.personalizedlearningassistant.backend2.dto.profiledtos.Profiledto;
 import com.personalizedlearningassistant.backend2.model.UserProfile;
 import com.personalizedlearningassistant.backend2.repository.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,9 @@ public class ProfileServices {
     @Autowired
     private ProfileRepository profileRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public void createProfile(Profiledto profile){
         String username = profile.getUsername();
         String name = profile.getName();
@@ -21,7 +25,11 @@ public class ProfileServices {
         String email = profile.getEmail();
         String password = profile.getPassword();
         String avatarUrl = profile.getAvatarUrl();
-        UserProfile userProfile = new UserProfile(username, name, rollno, email, password, avatarUrl);
+
+        // Encode the password before saving
+        String encodedPassword = passwordEncoder.encode(password);
+
+        UserProfile userProfile = new UserProfile(username, name, rollno, email, encodedPassword, avatarUrl);
         profileRepository.save(userProfile);
     }
 
@@ -45,7 +53,13 @@ public class ProfileServices {
         Optional.ofNullable(profiledto.getName()).ifPresent(existing::setName);
         Optional.ofNullable(profiledto.getRollno()).ifPresent(existing::setRollno);
         Optional.ofNullable(profiledto.getEmail()).ifPresent(existing::setEmail);
-        Optional.ofNullable(profiledto.getPassword()).ifPresent(existing::setPassword);
+
+        // Only encode and update password if it was provided
+        if (profiledto.getPassword() != null && !profiledto.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(profiledto.getPassword());
+            existing.setPassword(encodedPassword);
+        }
+
         Optional.ofNullable(profiledto.getAvatarUrl()).ifPresent(existing::setAvatarUrl);
 
         // no need to explicitly save inside transaction, but call save to be explicit

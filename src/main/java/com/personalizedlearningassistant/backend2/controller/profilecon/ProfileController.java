@@ -1,12 +1,20 @@
 package com.personalizedlearningassistant.backend2.controller.profilecon;
 
+import com.personalizedlearningassistant.backend2.configuration.JwtUtility;
+import com.personalizedlearningassistant.backend2.dto.AuthResponse;
 import com.personalizedlearningassistant.backend2.dto.profiledtos.Profiledto;
+import com.personalizedlearningassistant.backend2.model.UserProfile;
+import com.personalizedlearningassistant.backend2.repository.ProfileRepository;
 import com.personalizedlearningassistant.backend2.services.profile.ProfileServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
@@ -17,10 +25,52 @@ public class ProfileController {
     @Autowired
     private ProfileServices profileService;
 
+    @Autowired
+    private ProfileRepository profileRepository;
+
+    @Autowired
+    private JwtUtility jwtUtility;
+
+    /**
+     * Register/Create profile endpoint
+     * Takes UserProfile data (username, password, name, rollno, email, avatarUrl)
+     * Returns JWT token on successful registration
+     */
     @PostMapping("/create-profile")
     public ResponseEntity<?> createProfile(@RequestBody Profiledto profiledto) {
-        profileService.createProfile(profiledto);
-        return ResponseEntity.ok().body("Profile created successfully");
+        try {
+            // Validate required fields
+            if (profiledto.getUsername() == null || profiledto.getUsername().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new AuthResponse(null, "Username is required"));
+            }
+
+            if (profiledto.getPassword() == null || profiledto.getPassword().isEmpty()) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new AuthResponse(null, "Password is required"));
+            }
+
+            // Check if user already exists
+            UserProfile existingUser = profileRepository.findByUsername(profiledto.getUsername());
+            if (existingUser != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(new AuthResponse(null, "Username already exists"));
+            }
+
+            // Create profile with encoded password
+            profileService.createProfile(profiledto);
+
+            // Generate JWT token
+            String token = jwtUtility.generateToken(profiledto.getUsername());
+
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new AuthResponse(token, "Registration successful"));
+
+        } catch (Exception ex) {
+            logger.error("Error during profile creation/registration", ex);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new AuthResponse(null, "Registration failed: " + ex.getMessage()));
+        }
     }
 
     @GetMapping("/get-profile/{username}")
